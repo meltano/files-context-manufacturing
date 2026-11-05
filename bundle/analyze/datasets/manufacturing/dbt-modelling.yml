@@ -34,8 +34,10 @@ description: |
     cheaper storage.
   - Build **machine state** as intervals (start, end, state, reason) from state change events, and
     split intervals at shift and day boundaries so they sum correctly per shift.
-  - Join sensor and state data to orders by asset and time window. Use the plant's local timezone
-    and shift calendar; night shifts cross midnight.
+  - Join sensor and state data to orders by asset and time window, on timestamps in UTC
+    (GMT+00:00, no daylight saving). Use the plant's local timezone (UK: GMT in winter, BST =
+    GMT+01:00 in summer) and shift calendar; night shifts cross midnight, and a night shift on a
+    clock-change night is an hour shorter or longer.
   - Expect gaps and duplicates from edge devices. Deduplicate on asset, tag and timestamp, and flag
     gaps rather than interpolating silently.
 
