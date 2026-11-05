@@ -1,0 +1,62 @@
+version: datasets/v0.3
+title: "Manufacturing: modelling it in dbt"
+questions: How should raw manufacturing data be modelled in dbt so that it reconciles?
+description: |
+  Conventions for building dbt models on raw manufacturing data. They apply on top of the
+  workspace's usual dbt layout: staging, then intermediate, then marts.
+
+  ## ERP sources
+
+  - ERP tables have terse names and codes (SAP's `MARA`, `AFKO`, `MSEG`, for example). Rename to
+    readable columns in staging, and keep the source table and field in the column description.
+  - Map **movement types** and order types to readable categories in one seed, and test that every
+    code is mapped.
+  - Sign quantities consistently: SAP gives a debit/credit indicator rather than a signed quantity.
+    Normalise in staging.
+
+  ## Units and money
+
+  - **Convert units in staging** to each item's base unit, using the ERP's conversion table per
+    item, and keep the original quantity and unit. Never sum quantities in different units.
+  - Keep money in `numeric`/`decimal` with its currency, and value inventory with the costing method
+    the ERP uses (standard, moving average or FIFO).
+
+  ## Bills of materials
+
+  - Explode multi-level BOMs with a **recursive CTE** or an iterative model, carrying the level,
+    path and extended quantity. Guard against cycles and limit the depth.
+  - Join the BOM and routing revision **effective** when the order ran, not today's.
+
+  ## Shop-floor and time-series data
+
+  - Do not load raw historian data at full resolution unless it is needed. Aggregate in the source
+    or in staging to a useful grain (per minute, per cycle or per order), and keep the raw data in
+    cheaper storage.
+  - Build **machine state** as intervals (start, end, state, reason) from state change events, and
+    split intervals at shift and day boundaries so they sum correctly per shift.
+  - Join sensor and state data to orders by asset and time window. Use the plant's local timezone
+    and shift calendar; night shifts cross midnight.
+  - Expect gaps and duplicates from edge devices. Deduplicate on asset, tag and timestamp, and flag
+    gaps rather than interpolating silently.
+
+  ## OEE
+
+  Build OEE from its components over the same time window and asset, and aggregate by summing the
+  underlying times and counts, never by averaging OEE percentages.
+
+  ## Tests
+
+  - **Inventory reconciliation:** opening stock plus movements equals closing stock, per item and
+    location, and agrees with the ERP's stock report.
+  - **Order quantities:** confirmed good plus scrap quantity does not exceed what was issued, after
+    agreed tolerances.
+  - **Accepted values** on movement types, order statuses, state codes and units of measure.
+  - **Freshness** on MES and historian feeds, since a dropped connection looks like downtime.
+
+  ## Sensitive columns
+
+  Tag employee, supplier pricing and customer columns in the model YAML (for example
+  `meta: {sensitive: true}`) and keep them out of marts that do not need them. See *Manufacturing:
+  handling the data*.
+
+  #manufacturing #organisation-context

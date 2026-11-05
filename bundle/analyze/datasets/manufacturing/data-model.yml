@@ -1,0 +1,42 @@
+version: datasets/v0.3
+title: "Manufacturing: data model"
+questions: What are the core entities of manufacturing data, and at what grain should each be modelled?
+description: |
+  The entities most manufacturing data reduces to, with the grain and key of each. Use it to map
+  raw source tables onto a consistent model. Names are suggestions; keep the organisation's own
+  terms where they already exist (SAP calls an item a material, for example).
+
+  | Entity | Grain (one row per…) | Notes |
+  |---|---|---|
+  | `item` (material, part, SKU) | item per plant | Type (raw, semi-finished, finished, spare), base unit of measure, standard cost. Plant-level settings differ |
+  | `bom_component` | parent item, component and revision | Quantity per parent, unit, scrap allowance, effective dates. Explode it for multi-level views |
+  | `routing_operation` | operation in a routing | Work centre, set-up and run time standards |
+  | `plant` / `work_centre` / `asset` | site / production resource / machine | A hierarchy: plant, area, line, work centre, machine. Capacity and shift calendar per work centre |
+  | `production_order` (work order) | order | Item, planned and actual quantity, planned and actual start and finish, status |
+  | `production_confirmation` | operation confirmation | Good and scrap quantities, labour and machine time booked against an operation |
+  | `material_movement` | inventory movement | Goods receipt, issue to production, transfer, adjustment, with movement type, quantity, unit, batch and value |
+  | `inventory_daily` | item per location (and batch) per day | End-of-day stock snapshot, quantity and value |
+  | `machine_state_event` | state change per asset | Running, idle, planned stop, unplanned stop, with reason code. The input to OEE |
+  | `sensor_reading` | tag per timestamp | Raw historian data. Usually kept aggregated (per minute or per cycle) in the warehouse |
+  | `inspection` / `test_result` | characteristic tested per sample | Specification limits and measured value. The input to yield and SPC |
+  | `non_conformance` | non-conformance or CAPA | Defect type, quantity affected, cause, disposition (scrap, rework, use as is) |
+  | `maintenance_work_order` | work order | Asset, type (planned, corrective, breakdown), failure code, downtime and cost |
+  | `sales_order_line` / `purchase_order_line` | order line | Requested, promised and delivered dates and quantities |
+  | `shipment` | delivery line | Shipped quantity and date. Compared with the order line for on-time in full |
+
+  ## Relationships
+
+  - An **item** has a **bill of materials** and a **routing**; a **production order** makes an
+    item by following them.
+  - A production order has **confirmations** and **material movements** (issues of components and
+    receipt of the finished item), and they give its actual cost.
+  - An **asset** has **state events**, **sensor readings** and **maintenance work orders**, and runs
+    production orders through time.
+  - A **batch** or serial links material movements, inspections and shipments for traceability.
+
+  ## Status and history
+
+  BOMs, routings and standard costs are versioned by effective date: join on the version in effect
+  when the order ran. Snapshot inventory, open orders and order status for "as at" reporting.
+
+  #manufacturing #organisation-context

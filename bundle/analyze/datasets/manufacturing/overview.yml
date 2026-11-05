@@ -1,0 +1,51 @@
+version: datasets/v0.3
+title: "Manufacturing: industry overview"
+questions: What does a manufacturing organisation's data look like, and where does it come from?
+description: |
+  Industry context for this workspace, for the people and AI assistants working in it. It has no
+  query: it is a briefing to read before modelling or analysing this organisation's data.
+
+  ## Segments
+
+  Manufacturing covers organisations that turn materials into products. The segments differ in how
+  production is organised, and so in which entities and metrics matter most:
+
+  - **Discrete manufacturing:** automotive, aerospace, machinery, electronics. Countable units
+    built from a bill of materials, through routings of operations, often with serial numbers.
+  - **Process manufacturing:** chemicals, food and drink, pharmaceuticals, metals, paper. Batches or
+    continuous flows made to a recipe, with yields, by-products and lot traceability.
+  - **Make-to-order and engineer-to-order:** bespoke products, where projects, quotes and engineering
+    changes drive the data.
+  - **Contract manufacturing:** production for other brands, with customer-owned specifications and
+    tight quality and traceability requirements.
+  - **Industrial suppliers and distributors:** often run alongside manufacturing. Inventory,
+    purchasing and service parts.
+
+  ## Typical source systems
+
+  | System | Examples | What it holds |
+  |---|---|---|
+  | ERP | SAP S/4HANA (or ECC), Oracle Fusion Cloud SCM, Microsoft Dynamics 365, Infor (LN, M3, SyteLine), Epicor, IFS | Items, BOMs, sales and purchase orders, work orders, inventory, costs, the general ledger |
+  | Manufacturing execution system (MES) | Siemens Opcenter, Rockwell FactoryTalk ProductionCentre, AVEVA MES, Plex | Production orders, operations, labour, material consumption, genealogy |
+  | Historian and SCADA | AVEVA PI (formerly OSIsoft PI), Ignition, GE Proficy | Time-series sensor and machine data from PLCs, often via OPC UA or MQTT |
+  | Maintenance (CMMS/EAM) | IBM Maximo, SAP Plant Maintenance, Fiix, UpKeep | Assets, work orders, failures, spares, planned maintenance |
+  | Quality (QMS/LIMS) | ETQ Reliance, MasterControl, LabWare, inspection records in the MES | Inspections, non-conformances, CAPAs, test results, certificates |
+  | Product lifecycle (PLM) | Siemens Teamcenter, PTC Windchill, Dassault ENOVIA | Engineering BOMs, revisions, engineering change orders |
+  | Planning | SAP IBP, Kinaxis, o9, the ERP's MRP | Demand forecasts, supply plans, schedules |
+  | Warehouse and logistics | SAP EWM, Manhattan, a carrier or 3PL feed | Stock locations, picks, shipments |
+
+  ## What makes the data different
+
+  - **Two worlds meet.** Transactional data from the ERP (orders, costs) and operational data from
+    the shop floor (machine states, sensor readings at second or sub-second intervals) arrive at very
+    different volumes and grains, and must be joined on time, asset and order.
+  - **Structures nest.** A bill of materials has many levels, and an item can be a component of
+    many products. Costs and requirements roll up through it.
+  - **Units of measure vary.** The same material is bought in tonnes, stored in kilograms and issued
+    in metres. Conversion factors live in the ERP, per item.
+  - **Traceability is a requirement.** In regulated sectors, every batch or serial must be traced to
+    its materials, machines and inspections. See *Manufacturing: handling the data*.
+
+  Related datasets: *data model*, *metrics*, *modelling it in dbt*, *handling the data*.
+
+  #manufacturing #organisation-context

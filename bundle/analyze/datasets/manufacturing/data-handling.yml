@@ -1,0 +1,51 @@
+version: datasets/v0.3
+title: "Manufacturing: handling the data"
+questions: What care does manufacturing data need in the warehouse?
+description: |
+  Manufacturing data is mostly commercially confidential rather than personal, but it includes
+  employee data, controlled technical data and records regulators can inspect. These are general
+  practices for a warehouse holding it. They are not legal or compliance advice: the organisation's
+  compliance, quality and security teams decide what applies to it.
+
+  ## Classify the data
+
+  | Class | Examples | Handling |
+  |---|---|---|
+  | Export-controlled technical data | Designs, specifications and process data for military or dual-use items | Keep it out of the warehouse unless the location, cloud region and every person with access are cleared for it |
+  | Intellectual property | Recipes, formulations, process parameters, CAD models, costings | Restrict to the roles that need it. Aggregate process data where possible |
+  | Regulated quality records | Batch records, inspection results, deviations, CAPAs in food, pharma, medical devices and aerospace | Load as read-only copies. The system of record stays the QMS or MES; the warehouse must not become an uncontrolled copy used for release decisions |
+  | Employee data | Operator IDs on confirmations, labour hours, shift attendance, safety incidents | Personal data. Pseudonymise operator IDs in performance marts, and check works council or union agreements before reporting individual productivity |
+  | Commercial data | Customer prices, supplier contracts, margins | Restrict to commercial and finance roles |
+
+  ## Practices
+
+  - **Least privilege.** Separate raw, staging and mart schemas, and grant raw schemas only to the
+    pipelines and the people who maintain them.
+  - **Separate OT from IT.** Pull shop-floor data through an agreed, outbound-only path (a
+    historian or a gateway) rather than connecting the warehouse to control systems. Never write
+    back to PLCs or SCADA from analytics.
+  - **Data integrity.** In regulated manufacturing, records must be attributable, legible,
+    contemporaneous, original and accurate (ALCOA+). Keep load history and lineage so a reported
+    figure can be traced to the source record.
+  - **Retention.** Quality and traceability records are often kept for the product's life plus a
+    set period. Agree retention with quality, and model deletion explicitly for personal data.
+  - **No production data in development** without masking where it holds personal or controlled
+    data.
+
+  ## Rules and standards to be aware of
+
+  Which apply depends on the organisation's country, sector and products. Common ones:
+
+  - **Quality management:** ISO 9001, IATF 16949 (automotive), AS9100 (aerospace), ISO 13485
+    (medical devices).
+  - **Regulated products:** GMP and data integrity guidance from the MHRA, EMA and FDA, FDA 21 CFR
+    Part 11 for electronic records, food safety rules (FSMA in the US, HACCP-based controls in the
+    UK and EU).
+  - **Export controls:** UK Strategic Export Controls, the EU Dual-Use Regulation, US EAR and ITAR.
+  - **Industrial cyber security:** IEC 62443, and the NIS2 Directive in the EU for in-scope
+    manufacturers.
+  - **Personal data:** UK GDPR and GDPR for employee and customer data.
+  - **Health and safety and environment:** RIDDOR in the UK and OSHA in the US for incident
+    reporting; emissions reporting such as the UK and EU emissions trading schemes.
+
+  #manufacturing #organisation-context

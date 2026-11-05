@@ -1,0 +1,51 @@
+version: datasets/v0.3
+title: "Manufacturing: key metrics"
+questions: Which metrics does a manufacturing organisation run on, and how is each calculated?
+description: |
+  Standard definitions of the metrics manufacturing organisations report. Confirm each one with the
+  operations or finance team before building it: organisations differ on what counts as planned
+  downtime, ideal cycle time and good output.
+
+  ## Equipment and production
+
+  | Metric | Definition |
+  |---|---|
+  | Overall equipment effectiveness (OEE) | Availability × performance × quality |
+  | Availability | Run time ÷ planned production time (planned production time excludes planned stops such as breaks and planned maintenance) |
+  | Performance | (Ideal cycle time × total count) ÷ run time |
+  | Quality | Good count ÷ total count |
+  | Throughput | Good units produced per hour (or shift) |
+  | Schedule adherence | Orders (or quantity) completed as scheduled ÷ orders scheduled |
+  | Capacity utilisation | Actual output ÷ maximum possible output |
+
+  ## Quality
+
+  | Metric | Definition |
+  |---|---|
+  | First pass yield (FPY) | Units passing every operation first time without rework ÷ units started |
+  | Scrap rate | Scrapped quantity (or value) ÷ total produced |
+  | Defects per million opportunities (DPMO) | Defects ÷ (units × opportunities per unit) × 1,000,000 |
+  | Process capability (Cpk) | min(USL − mean, mean − LSL) ÷ (3 × standard deviation), per characteristic |
+  | Customer complaints (PPM) | Defective parts returned by customers per million parts shipped |
+
+  ## Maintenance
+
+  | Metric | Definition |
+  |---|---|
+  | Mean time between failures (MTBF) | Operating time ÷ number of failures, per asset |
+  | Mean time to repair (MTTR) | Total repair time ÷ number of repairs |
+  | Planned maintenance percentage | Planned maintenance hours ÷ all maintenance hours |
+  | Unplanned downtime | Hours of unplanned stops, by asset and reason |
+
+  ## Supply chain and cost
+
+  | Metric | Definition |
+  |---|---|
+  | On-time in full (OTIF) | Order lines delivered on the promised date and in the full quantity ÷ order lines due |
+  | Inventory turns | Cost of goods sold ÷ average inventory value |
+  | Days of inventory | Average inventory value ÷ cost of goods sold × days in the period |
+  | Supplier on-time delivery | Purchase order lines received on time ÷ lines due |
+  | Production cost variance | Actual cost less standard cost of the quantity produced, split into material, labour and overhead |
+  | Cost per unit | Total production cost ÷ good units produced |
+
+  #manufacturing #organisation-context
